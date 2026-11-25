@@ -1,0 +1,797 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Độ Nhạy Free Fire</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: bảng điều khiển kiểu HUD, một cột. Form nhập máy, bộ độ nhạy dạng thanh đo, hai thẻ nổi bật (kích thước nút bắn, Smallest width), rồi vị trí nút bắn, hướng dẫn và danh sách đã lưu. */
+:root {
+  --bg: #050722;
+  --gridc: #5a7bff14;
+  --glow: #1b2290;
+  --panel-top: #0e1560;
+  --panel-bot: #090d44;
+  --edge: #2b3bd0;
+  --track: #060940;
+  --cyan: #2fd0ff;
+  --blue: #5a7bff;
+  --chip-edge: #6c7dff;
+  --ink: #eaf0ff;
+  --dim: #98a3ee;
+  --gold: #ffd43b;
+  --gold-ink: #2a1d00;
+  --gold-fill: #ffd43b55;
+  --joy: #2fd0ff22;
+  --glow-cyan: #2fd0ff66;
+  --glow-gold: #ffd43b66;
+  --warn: #ffb347;
+  --good: #4be3a0;
+  --display: "Chakra Petch", "Segoe UI", sans-serif;
+  --body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--gridc) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gridc) 1px, transparent 1px),
+    radial-gradient(120% 50% at 50% 0%, var(--glow) 0%, transparent 65%);
+  background-size: 32px 32px, 32px 32px, auto;
+  background-repeat: repeat, repeat, no-repeat;
+}
+.wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 16px; }
+h1, h2 { font-family: var(--display); margin: 0; text-wrap: balance; }
+h1 { font-size: 36px; line-height: 1.08; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+h1 span { color: var(--gold); text-shadow: 0 0 22px var(--glow-gold); }
+h2 { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+h2::before { content: ""; flex: none; width: 5px; height: 18px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.lead { margin: 10px 0 0; color: var(--dim); max-width: 54ch; }
+
+.card {
+  position: relative;
+  background: linear-gradient(180deg, var(--panel-top), var(--panel-bot));
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  padding: 20px 16px 18px;
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.card::before, .card::after { content: ""; position: absolute; width: 16px; height: 16px; border: 2px solid var(--cyan); pointer-events: none; }
+.card::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; border-top-left-radius: 6px; }
+.card::after { right: -1px; bottom: -1px; border-left: 0; border-top: 0; border-bottom-right-radius: 6px; }
+.card.is-vn { border-color: var(--gold); }
+.card.is-vn::before, .card.is-vn::after { border-color: var(--gold); }
+
+label, legend { font: 600 12px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--cyan); }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 8px; }
+legend { padding: 0; margin-bottom: 8px; }
+
+input[type="text"], input[type="number"], select {
+  width: 100%;
+  height: 50px;
+  padding: 0 14px;
+  border-radius: 4px;
+  border: 1px solid var(--edge);
+  border-bottom: 2px solid var(--blue);
+  background: var(--track);
+  color: var(--ink);
+  font: 500 16px var(--mono);
+  caret-color: var(--cyan);
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px var(--glow-cyan);
+}
+input::placeholder { color: #6f78c9; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.status { margin: 8px 0 0; font-size: 13px; color: var(--dim); }
+.status.ok { color: var(--good); }
+.status.warn { color: var(--warn); }
+
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.seg.two { grid-template-columns: repeat(2, 1fr); }
+.seg label { position: relative; display: block; font: inherit; letter-spacing: 0; text-transform: none; color: inherit; }
+.vh { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.seg span {
+  display: block;
+  text-align: center;
+  padding: 12px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--edge);
+  background: var(--track);
+  color: var(--ink);
+  font: 600 14px var(--display);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.seg input:checked + span {
+  background: linear-gradient(180deg, var(--cyan), var(--blue));
+  border-color: var(--cyan);
+  color: #02103a;
+  box-shadow: 0 0 16px var(--glow-cyan);
+}
+.seg input:focus-visible + span,
+input[type="range"]:focus-visible, input[type="checkbox"]:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.feel-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.feel-top output { font: 700 13px var(--mono); color: var(--gold); }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; margin: 6px 0 0; }
+input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 2px; background: var(--track); border: 1px solid var(--edge); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 26px; margin-top: -10px; border-radius: 3px; background: var(--gold); border: 2px solid var(--ink); box-shadow: 0 0 12px var(--glow-gold); }
+input[type="range"]::-moz-range-track { height: 8px; border-radius: 2px; background: var(--track); border: 1px solid var(--edge); }
+input[type="range"]::-moz-range-thumb { width: 18px; height: 22px; border-radius: 3px; background: var(--gold); border: 2px solid var(--ink); }
+.feel-scale { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--dim); }
+
+details { border: 1px dashed var(--edge); border-radius: 4px; padding: 0 12px; }
+summary { padding: 13px 0; cursor: pointer; font: 600 12px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+summary::marker { color: var(--cyan); }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.specs { display: grid; gap: 14px; padding: 14px 12px 16px; border: 1px solid var(--edge); border-radius: 4px; background: #060940aa; }
+.specs.auto { border-color: var(--cyan); }
+.specs-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; font: 600 12px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--cyan); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 4px;
+  border: 1px solid var(--edge);
+  background: var(--track);
+  color: var(--ink);
+  font: 600 14px var(--display);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--cyan); }
+.btn.primary {
+  flex: 1 1 100%;
+  min-height: 54px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(180deg, #ffe375, var(--gold));
+  color: var(--gold-ink);
+  font-size: 17px;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+}
+.btn.primary:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: -6px; }
+.btn:not(.primary) { flex: 1 1 auto; }
+.btn:active { transform: translateY(1px); }
+
+.res-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.tag { font: 700 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; background: var(--gold); color: var(--gold-ink); }
+.tag.ghost { background: transparent; color: var(--dim); border: 1px solid var(--edge); }
+.devline { font: 500 12.5px var(--mono); color: var(--dim); overflow-wrap: anywhere; }
+
+.rows { display: grid; gap: 16px; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 14px; row-gap: 7px; align-items: center; }
+.row .lbl { grid-column: 1; grid-row: 1; font: 600 14px var(--body); }
+.row .bar { grid-column: 1; grid-row: 2; }
+.row .chip { grid-column: 2; grid-row: 1 / 3; }
+.bar { position: relative; height: 14px; border-radius: 2px; background: var(--track); border: 1px solid var(--edge); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--cyan)); box-shadow: 0 0 12px var(--glow-cyan); }
+.bar::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), #050722bb calc(10% - 1px) 10%); }
+.ready .bar i { transition: width .4s ease; }
+.chip {
+  min-width: 76px; padding: 9px 10px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--track);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 14px var(--glow-cyan) inset;
+  font: 700 22px/1 var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.feat { --acc: var(--gold); --acc-glow: var(--glow-gold); border-color: var(--acc); gap: 16px; align-content: start; }
+.feat::before, .feat::after { border-color: var(--acc); }
+.feat.sw { --acc: var(--cyan); --acc-glow: var(--glow-cyan); }
+.feat-top { display: flex; align-items: center; gap: 12px; }
+.feat-top > div { min-width: 0; }
+.feat-ico { flex: none; width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid var(--acc); border-radius: 4px; background: var(--track); color: var(--acc); }
+.feat-ico svg { width: 28px; height: 28px; }
+.feat h2 { font-size: 17px; }
+.feat h2::before { background: var(--acc); box-shadow: 0 0 10px var(--acc); }
+.feat-sub { margin: 2px 0 0; font-size: 12px; color: var(--dim); }
+.readout { display: flex; align-items: baseline; gap: 10px; color: var(--acc); text-shadow: 0 0 22px var(--acc-glow); }
+.readout b { font: 700 58px/1 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -.03em; overflow-wrap: anywhere; }
+.readout .unit { font: 600 16px var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); text-shadow: none; }
+.feat.fire .bar i { background: linear-gradient(90deg, #ff9d00, var(--gold)); box-shadow: 0 0 12px var(--glow-gold); }
+.scale { display: flex; justify-content: space-between; margin-top: 6px; font: 500 11px var(--mono); color: var(--dim); }
+.rule { position: relative; height: 14px; border-radius: 2px; background: var(--track); border: 1px solid var(--edge); }
+.rule::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0 calc(25% - 1px), #2b3bd0 calc(25% - 1px) 25%); }
+.mark { position: absolute; top: -5px; bottom: -5px; left: 50%; width: 5px; margin-left: -2px; border-radius: 1px; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); z-index: 1; }
+.feat.sw.na .readout b { font-size: 26px; }
+.feat.sw.na .unit, .feat.sw.na .rule-wrap { display: none; }
+.sw-ios { display: none; }
+.feat.sw.na .sw-ios { display: block; }
+
+.kv { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.kv .lbl { font: 600 14px var(--body); }
+.kv b { font: 700 18px var(--display); font-variant-numeric: tabular-nums; text-align: right; }
+.kv b.sm { font: 600 13px var(--mono); }
+.sub { display: grid; gap: 14px; padding-top: 14px; border-top: 1px solid var(--edge); }
+.note { margin: 0; font-size: 12.5px; color: var(--dim); }
+.msg { margin: 0; min-height: 1.4em; font-size: 13px; color: var(--good); }
+.dock { padding-block: 16px; gap: 12px; }
+#copybox { width: 100%; min-height: 150px; padding: 12px; border-radius: 4px; border: 1px solid var(--edge); background: var(--track); color: var(--ink); font: 13px/1.6 var(--mono); resize: vertical; }
+
+ol { margin: 0; padding-left: 24px; display: grid; gap: 8px; }
+ol li::marker { color: var(--gold); font-family: var(--mono); font-weight: 700; }
+.saved { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.saved li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px; border: 1px solid var(--edge); border-radius: 4px; background: var(--track); }
+.saved .who { flex: 1 1 160px; min-width: 0; overflow-wrap: anywhere; }
+.saved .who small { display: block; color: var(--dim); font: 500 12px var(--mono); }
+.saved li.empty { color: var(--dim); border-style: dashed; background: transparent; }
+.mini { min-height: 38px; padding: 0 14px; border-radius: 4px; border: 1px solid var(--edge); background: transparent; color: var(--ink); font: 600 12px var(--display); letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.mini:hover { border-color: var(--cyan); }
+
+.stage {
+  position: relative; width: 100%; border-radius: 4px; border: 1px solid var(--cyan); overflow: hidden; touch-action: none;
+  background-color: #070a32;
+  background-image: linear-gradient(var(--gridc) 1px, transparent 1px), linear-gradient(90deg, var(--gridc) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.stage::before { content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; transform: translate(-50%, -50%); border: 2px solid var(--dim); border-radius: 50%; opacity: .6; }
+.joy { position: absolute; left: 14%; top: 70%; width: 13%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed var(--edge); background: var(--joy); }
+.fb { position: absolute; transform: translate(-50%, -50%); aspect-ratio: 1; padding: 0; border-radius: 50%; border: 3px solid var(--gold); background: var(--gold-fill); box-shadow: 0 0 16px var(--glow-gold); cursor: grab; touch-action: none; }
+.fb::after { content: ""; position: absolute; inset: -60%; border-radius: 50%; border: 1px dashed var(--chip-edge); pointer-events: none; }
+.fb.left { border-color: var(--cyan); background: var(--joy); box-shadow: 0 0 16px var(--glow-cyan); }
+.fb:active { cursor: grabbing; }
+.check { display: flex; align-items: center; gap: 10px; font: 500 14px var(--body); letter-spacing: 0; text-transform: none; color: var(--ink); }
+.check input { width: 20px; height: 20px; accent-color: var(--gold); flex: none; }
+.foot { margin: 0; font-size: 12.5px; color: var(--dim); text-align: center; }
+
+@media (prefers-reduced-motion: reduce) { .ready .bar i { transition: none; } }
+</style>
+
+<main class="wrap">
+  <header>
+    <h1>Độ nhạy <span>Free Fire</span></h1>
+    <p class="lead">Nhập tên máy và chọn lối chơi. Trang tính ra bộ độ nhạy riêng cho máy của bạn để nhập vào phần Độ nhạy trong game.</p>
+  </header>
+
+  <form id="f" class="card" autocomplete="off">
+    <fieldset>
+      <legend>Phiên bản game</legend>
+      <div class="seg two">
+        <label><input class="vh" type="radio" name="game" value="global" checked><span>Free Fire</span></label>
+        <label><input class="vh" type="radio" name="game" value="vn"><span>FF VN</span></label>
+      </div>
+    </fieldset>
+
+    <div>
+      <label for="dev">Tên thiết bị</label>
+      <input id="dev" name="dev" type="text" list="devlist" placeholder="Ví dụ: iPhone 13, Galaxy A54, Redmi Note 12" enterkeyhint="go" autocapitalize="off" spellcheck="false" style="margin-top:8px">
+      <datalist id="devlist"></datalist>
+      <p id="status" class="status" aria-live="polite"></p>
+    </div>
+
+    <fieldset>
+      <legend>Lối chơi</legend>
+      <div class="seg">
+        <label><input class="vh" type="radio" name="style" value="rush"><span>Cận chiến</span></label>
+        <label><input class="vh" type="radio" name="style" value="balance" checked><span>Cân bằng</span></label>
+        <label><input class="vh" type="radio" name="style" value="long"><span>Bắn xa</span></label>
+      </div>
+    </fieldset>
+
+    <div>
+      <div class="feel-top"><label for="feel">Cảm giác tay</label><output id="feelOut" for="feel">Chuẩn</output></div>
+      <input id="feel" type="range" min="-10" max="10" step="1" value="0">
+      <div class="feel-scale"><span>Chậm, chắc tay</span><span>Nhanh, linh hoạt</span></div>
+    </div>
+
+    <div class="specs" id="manual">
+      <div class="specs-h"><span>Thông số máy</span><span id="autoTag" class="tag" hidden>Tự điền</span></div>
+      <div class="fields">
+        <div class="field"><label for="os">Hệ điều hành</label>
+          <select id="os"><option value="android">Android</option><option value="ios">iOS / iPadOS</option></select></div>
+        <div class="field"><label for="inch">Màn hình (inch)</label>
+          <input id="inch" type="number" inputmode="decimal" min="4" max="14" step="0.1" value="6.5"></div>
+        <div class="field"><label for="hz">Tần số quét</label>
+          <select id="hz"><option value="60">60 Hz</option><option value="90">90 Hz</option><option value="120">120 Hz</option><option value="144">144 Hz</option><option value="165">165 Hz</option></select></div>
+        <div class="field"><label for="tier">Cấu hình máy</label>
+          <select id="tier"><option value="1">Yếu (RAM 2-3 GB)</option><option value="2">Trung bình (RAM 4 GB)</option><option value="3">Khá (RAM 6 GB)</option><option value="4">Mạnh (RAM 8 GB)</option><option value="5">Flagship (RAM 12 GB+)</option></select></div>
+      </div>
+    <p class="note">Máy có trong danh sách sẽ tự điền các ô này. Máy lạ thì chọn thông số cho đúng máy của bạn.</p>
+    </div>
+
+    <div class="actions"><button class="btn primary" type="submit">Tạo độ nhạy</button></div>
+  </form>
+
+  <section class="card" id="results" aria-labelledby="rt">
+    <div class="res-head">
+      <h2 id="rt">Bộ độ nhạy</h2>
+      <span id="gameTag" class="tag" hidden>FF VN</span>
+      <span id="sample" class="tag">Ví dụ</span>
+      <span id="ver" class="tag ghost">Bản 1</span>
+    </div>
+    <div id="devline" class="devline"></div>
+    <p class="note" id="vnNote" hidden>FF VN quét tâm nhanh hơn bản quốc tế, nên các số ở đây thấp hơn một chút để cảm giác tay vẫn vừa.</p>
+    <div id="rows" class="rows"></div>
+  </section>
+
+  <div class="pair">
+    <section class="card feat fire" aria-labelledby="ft">
+      <div class="feat-top">
+        <span class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4"/></svg></span>
+        <div><h2 id="ft">Kích thước nút bắn</h2><p class="feat-sub">Thanh kích thước trong game</p></div>
+      </div>
+      <div class="readout"><b id="v-fire">0%</b></div>
+      <div>
+        <div class="bar"><i id="b-fire"></i></div>
+        <div class="scale"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+      <p class="note">Kéo thanh kích thước nút bắn trong phần tùy chỉnh giao diện về số này. Nút to dễ bấm, nút nhỏ ít che màn hình.</p>
+    </section>
+
+    <section class="card feat sw" id="swCard" aria-labelledby="st">
+      <div class="feat-top">
+        <span class="feat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M6 12h12M6 12l2.5-2.5M6 12l2.5 2.5M18 12l-2.5-2.5M18 12l-2.5 2.5"/></svg></span>
+        <div><h2 id="st">Smallest width</h2><p class="feat-sub">Chỉ Android, tùy chọn</p></div>
+      </div>
+      <div class="readout"><b id="v-sw">-</b><span class="unit">dp</span></div>
+      <div class="rule-wrap">
+        <div class="rule"><i class="mark" id="b-sw"></i></div>
+        <div class="scale"><span>360</span><span>400</span><span>440</span></div>
+      </div>
+      <p class="note" id="swNote">Vào Tùy chọn nhà phát triển, mục Smallest width, nhập số này. Bỏ qua nếu bạn không rành. Nếu giao diện máy bị quá to hoặc quá nhỏ, nhập lại giá trị ban đầu của máy.</p>
+      <p class="note sw-ios">iPhone và iPad không có mục này, bỏ qua phần này.</p>
+    </section>
+  </div>
+
+  <section class="card dock" aria-label="Sao chép và lưu">
+    <div class="actions">
+      <button class="btn" type="button" id="copy">Sao chép</button>
+      <button class="btn" type="button" id="save">Lưu cấu hình</button>
+      <button class="btn" type="button" id="alt">Thử bản khác</button>
+    </div>
+    <p class="msg" id="msg" aria-live="polite"></p>
+    <textarea id="copybox" readonly hidden aria-label="Nội dung để sao chép"></textarea>
+  </section>
+
+  <section class="card" id="layout" aria-labelledby="lt">
+    <div class="res-head"><h2 id="lt">Vị trí nút bắn</h2><span id="posTag" class="tag ghost" hidden>Đã chỉnh tay</span></div>
+    <p class="note">Kéo nút vàng đến chỗ ngón cái thoải mái, hoặc chọn nút rồi dùng phím mũi tên. Vòng nét đứt là chỗ ngón để kéo tâm, nên chừa trống. Vòng nhỏ ở giữa là tâm ngắm.</p>
+    <div class="stage" id="stage" role="group" aria-label="Xem trước màn hình game">
+      <div class="joy" aria-hidden="true"></div>
+      <button type="button" class="fb left" id="fbl" hidden aria-label="Nút bắn trái"></button>
+      <button type="button" class="fb" id="fb" aria-label="Nút bắn phải"></button>
+    </div>
+    <label class="check" for="leftOn"><input type="checkbox" id="leftOn"> Thêm nút bắn trái (chơi 3 đến 4 ngón)</label>
+    <div class="sub">
+      <div class="kv"><span class="lbl">Nút bắn phải</span><b class="sm" id="posR"></b></div>
+      <div class="kv" id="posLrow" hidden><span class="lbl">Nút bắn trái</span><b class="sm" id="posL"></b></div>
+      <p class="note" id="cmNote"></p>
+    </div>
+    <div class="actions"><button class="btn" type="button" id="posReset">Đặt lại gợi ý</button></div>
+  </section>
+
+  <section class="card">
+    <h2>Cách áp dụng</h2>
+    <ol>
+      <li>Mở Free Fire, vào Cài đặt và chọn mục Độ nhạy.</li>
+      <li>Kéo từng thanh về đúng số ở trên. Nút bắn và vị trí nút bắn chỉnh trong phần tùy chỉnh giao diện.</li>
+      <li>Vào Khu huấn luyện, bắn thử ở khoảng 10 đến 30 m.</li>
+      <li>Tâm kéo quá nhanh thì giảm 3 đến 5 cho mọi thanh. Quá chậm thì tăng 3 đến 5. Hoặc kéo thanh Cảm giác tay rồi bấm Tạo độ nhạy lại.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>Đã lưu</h2>
+    <ul class="saved" id="saved"></ul>
+  </section>
+
+  <p class="foot">Số gợi ý tính từ kích thước màn hình, tần số quét và cấu hình máy. Trang chỉ đưa số để bạn tự nhập vào game, không can thiệp vào game.</p>
+</main>
+
+<script>
+// ==LOGIC==
+const DEVICES = [
+  ["iPhone SE 2022",4.7,60,4],["iPhone 11",6.1,60,4],["iPhone 12 mini",5.4,60,4],["iPhone 12",6.1,60,4],
+  ["iPhone 12 Pro",6.1,60,4],["iPhone 12 Pro Max",6.7,60,4],["iPhone 13 mini",5.4,60,5],["iPhone 13",6.1,60,5],
+  ["iPhone 13 Pro",6.1,120,5],["iPhone 13 Pro Max",6.7,120,5],["iPhone 14",6.1,60,5],["iPhone 14 Plus",6.7,60,5],
+  ["iPhone 14 Pro",6.1,120,5],["iPhone 14 Pro Max",6.7,120,5],["iPhone 15",6.1,60,5],["iPhone 15 Plus",6.7,60,5],
+  ["iPhone 15 Pro",6.1,120,5],["iPhone 15 Pro Max",6.7,120,5],["iPhone 16",6.1,60,5],["iPhone 16 Plus",6.7,60,5],
+  ["iPhone 16 Pro",6.3,120,5],["iPhone 16 Pro Max",6.9,120,5],["iPhone 17",6.3,120,5],["iPhone 17 Pro",6.3,120,5],
+  ["iPhone 17 Pro Max",6.9,120,5],["iPhone Air",6.5,120,5],
+  ["iPad Gen 9",10.2,60,4],["iPad Gen 10",10.9,60,5],["iPad Air M1",10.9,60,5],["iPad mini 6",8.3,60,5],
+  ["iPad Pro 11",11,120,5],["iPad Pro 12.9",12.9,120,5],
+  ["Samsung Galaxy A14",6.6,60,1],["Samsung Galaxy A24",6.5,90,2],["Samsung Galaxy A34",6.6,120,2],
+  ["Samsung Galaxy A54",6.4,120,3],["Samsung Galaxy A55",6.6,120,3],["Samsung Galaxy M14",6.6,90,2],
+  ["Samsung Galaxy S21",6.2,120,4],["Samsung Galaxy S22",6.1,120,4],["Samsung Galaxy S23",6.1,120,5],
+  ["Samsung Galaxy S23 Ultra",6.8,120,5],["Samsung Galaxy S24",6.2,120,5],["Samsung Galaxy S24 Ultra",6.8,120,5],
+  ["Samsung Galaxy S25",6.2,120,5],["Samsung Galaxy S25 Ultra",6.9,120,5],["Samsung Galaxy Tab S9",11,120,5],
+  ["Xiaomi Redmi 9A",6.53,60,1],["Xiaomi Redmi 12C",6.71,60,1],["Xiaomi Redmi 13C",6.74,90,1],["Xiaomi Redmi 10",6.5,90,2],
+  ["Xiaomi Redmi Note 10",6.43,60,2],["Xiaomi Redmi Note 11",6.43,90,2],["Xiaomi Redmi Note 12",6.67,120,2],
+  ["Xiaomi Redmi Note 12 Pro",6.67,120,3],["Xiaomi Redmi Note 13",6.67,120,3],["Xiaomi Redmi Note 13 Pro",6.67,120,3],
+  ["Xiaomi Redmi Note 14",6.67,120,3],["Xiaomi POCO X5 Pro",6.67,120,3],["Xiaomi POCO X6 Pro",6.67,120,4],
+  ["Xiaomi POCO F5",6.67,120,5],["Xiaomi POCO F6",6.67,120,5],["Xiaomi 13T",6.67,144,5],
+  ["OPPO A17",6.56,60,1],["OPPO A57",6.56,90,1],["OPPO A78",6.43,90,2],["OPPO Reno8",6.4,90,3],
+  ["OPPO Reno10",6.7,120,3],["OPPO Reno11",6.7,120,3],
+  ["vivo Y21",6.51,60,1],["vivo Y22s",6.55,90,2],["vivo Y36",6.64,90,2],["vivo V27",6.78,120,3],
+  ["vivo V29",6.78,120,3],["vivo Y100",6.67,120,3],
+  ["realme C33",6.5,60,1],["realme C55",6.72,90,2],["realme 10 Pro",6.72,120,3],["realme 11 Pro",6.7,120,3],
+  ["realme GT Neo 3",6.7,120,5],
+  ["Infinix Hot 30",6.78,90,1],["Infinix Note 30",6.78,120,2],["Tecno Spark 10",6.6,90,1],
+  ["Google Pixel 7",6.3,90,4],["Google Pixel 8",6.2,120,5],["OnePlus 11",6.7,120,5],
+  ["ASUS ROG Phone 7",6.78,165,5],["Nubia Red Magic 8 Pro",6.8,120,5],
+  ["Nubia Neo 3 GT 5G",6.8,120,5]
+];
+const TIER_NAMES = ["Yếu","Trung bình","Khá","Mạnh","Flagship"];
+const STYLES = {
+  balance: { label: "Cân bằng", fire: 0,  base: { general:175, red:165, x2:152, x4:140, awm:118, free:128 } },
+  rush:    { label: "Cận chiến", fire: 3, base: { general:188, red:178, x2:160, x4:146, awm:112, free:138 } },
+  long:    { label: "Bắn xa", fire: -2,   base: { general:160, red:152, x2:146, x4:136, awm:128, free:118 } }
+};
+// [khóa, tên hiển thị, mức ảnh hưởng của kích thước/tần số quét]
+const SCOPES = [
+  ["general","Tổng quan",1],["red","Red Dot",1],["x2","Ống ngắm 2x",0.8],
+  ["x4","Ống ngắm 4x",0.65],["awm","Ống ngắm AWM",0.5],["free","Ống ngắm tự do",1]
+];
+// Bản VN quét tâm nhẹ và nhanh hơn, nên mỗi thanh nhân với hệ số nhỏ hơn 1
+const GAME_MULT = {
+  global: { general:1, red:1, x2:1, x4:1, awm:1, free:1 },
+  vn: { general:0.92, red:0.93, x2:0.94, x4:0.95, awm:0.96, free:0.93 }
+};
+const HZ_F = { 60:1.02, 90:1, 120:0.97, 144:0.95, 165:0.94 };
+const TIER_F = [1.05, 1.03, 1, 0.99, 0.98];
+
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+function norm(s) {
+  return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9]/g, "");
+}
+function hash(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rng(seed) {
+  let s = seed | 0;
+  return function () {
+    s = (s + 0x6D2B79F5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const DEV_INDEX = DEVICES.map(d => ({ d, n: norm(d[0]) }));
+function findDevice(q) {
+  const n = norm(q);
+  if (!n) return null;
+  const exact = DEV_INDEX.find(x => x.n === n);
+  if (exact) return exact.d;
+  const inside = DEV_INDEX.filter(x => n.includes(x.n)).sort((a, b) => b.n.length - a.n.length)[0];
+  if (inside) return inside.d;
+  if (n.length >= 4) {
+    const part = DEV_INDEX.filter(x => x.n.includes(n)).sort((a, b) => a.n.length - b.n.length)[0];
+    if (part) return part.d;
+  }
+  return null;
+}
+function specFromDevice(d) {
+  return { os: /^(iPhone|iPad)/.test(d[0]) ? "ios" : "android", inch: d[1], hz: d[2], tier: d[3] };
+}
+function defaultSpec(name) {
+  const n = norm(name);
+  if (!n) return { os: "android", inch: 6.8, hz: 120, tier: 5 };
+  if (n.includes("ipad")) return { os: "ios", inch: 10.9, hz: 60, tier: 5 };
+  if (n.includes("iphone")) return { os: "ios", inch: 6.1, hz: 60, tier: 5 };
+  return { os: "android", inch: 6.5, hz: 90, tier: 3 };
+}
+function generate(spec, styleKey, feel, variant, name, game) {
+  const st = STYLES[styleKey];
+  const size = clamp(1 + (spec.inch - 6.5) * 0.035, 0.93, 1.15);
+  const hz = HZ_F[spec.hz] || 1;
+  const tier = TIER_F[clamp(spec.tier, 1, 5) - 1];
+  const fe = 1 + feel * 0.012;
+  const total = size * hz * tier * fe;
+  const g = game === "vn" ? "vn" : "global";
+  const rand = rng(hash(norm(name) + "|" + styleKey + "|" + variant + (g === "vn" ? "|vn" : "")));
+  const values = {};
+  for (const [k, , w] of SCOPES) {
+    const adj = 1 + (total - 1) * w;
+    const jitter = Math.round(rand() * 8 - 4);
+    values[k] = clamp(Math.round(st.base[k] * adj * GAME_MULT[g][k] + jitter), 40, 200);
+  }
+  const fire = clamp(Math.round(50 - (spec.inch - 6.5) * 4 + st.fire), 30, 65);
+  const sw = spec.os === "ios" ? null : clamp(Math.round((420 - (spec.inch - 6.5) * 10) / 10) * 10, 360, 440);
+  return { values, fire, sw };
+}
+function aspectOf(spec) {
+  if (spec.os === "ios") return spec.inch > 8 ? 4 / 3 : 19.5 / 9;
+  return spec.inch > 8 ? 16 / 10 : 20 / 9;
+}
+// Vị trí tâm nút, tính bằng % từ mép phải (x) và mép dưới (y). Nút nằm cao và gần tâm hơn góc dưới để ngón có chỗ kéo.
+function recommendPos(spec, styleKey) {
+  const base = { rush: [15, 36], balance: [13, 32], long: [11, 28] }[styleKey] || [13, 32];
+  const k = clamp((spec.inch - 6.5) * 0.8, -2, 4);
+  return { x: Math.round(base[0] + k), y: Math.round(base[1] + k), lx: 8, ly: 55 };
+}
+// Kích thước màn hình ngang tính ra cm từ đường chéo (inch) và tỉ lệ khung hình
+function screenCm(spec) {
+  const a = aspectOf(spec);
+  const h = spec.inch * 2.54 / Math.sqrt(1 + a * a);
+  return { w: h * a, h };
+}
+function fmtCm(pct, dim) { return (pct / 100 * dim).toFixed(1); }
+// ==END LOGIC==
+
+const $ = id => document.getElementById(id);
+const SAMPLE = "";
+const state = { spec: defaultSpec(SAMPLE), manual: false, dev: null, style: "balance", game: "global", pos: { x: 13, y: 32 }, posL: { x: 8, y: 55 }, posManual: false, leftOn: false, feel: 0, variant: 1, confirmed: false };
+let saved = [];
+let msgTimer = 0;
+
+DEVICES.forEach(d => { const o = document.createElement("option"); o.value = d[0]; $("devlist").appendChild(o); });
+SCOPES.forEach(([k, label]) => {
+  $("rows").insertAdjacentHTML("beforeend",
+    '<div class="row"><span class="lbl">' + label + '</span><div class="bar"><i id="b-' + k + '"></i></div><b class="chip" id="v-' + k + '">0</b></div>');
+});
+
+function fillFields() {
+  $("os").value = state.spec.os;
+  $("inch").value = state.spec.inch;
+  $("hz").value = String(state.spec.hz);
+  $("tier").value = String(state.spec.tier);
+}
+function syncDevice() {
+  const q = $("dev").value.trim();
+  const dev = findDevice(q);
+  state.dev = dev;
+  if (dev) { state.spec = specFromDevice(dev); state.manual = false; fillFields(); }
+  else if (!state.manual) { state.spec = defaultSpec(q); fillFields(); }
+}
+function setStatus() {
+  const el = $("status");
+  const q = $("dev").value.trim();
+  el.className = "status";
+  $("autoTag").hidden = !state.dev;
+  $("manual").classList.toggle("auto", !!state.dev);
+  if (!q) { el.textContent = "Nhập tên máy để tính độ nhạy riêng."; return; }
+  if (state.dev) { el.textContent = "Nhận diện: " + state.dev[0]; el.classList.add("ok"); return; }
+  if (state.manual) { el.textContent = "Đang dùng thông số bạn nhập tay."; return; }
+  el.textContent = "Chưa có máy này trong danh sách. Đang dùng thông số mặc định, hãy chỉnh ở mục Chỉnh thông số máy cho sát máy bạn.";
+  el.classList.add("warn");
+}
+function say(text) {
+  $("msg").textContent = text;
+  clearTimeout(msgTimer);
+  msgTimer = setTimeout(() => { $("msg").textContent = ""; }, 3000);
+}
+function currentName() { return $("dev").value.trim() || "Thiết bị của bạn"; }
+
+function render() {
+  const name = currentName();
+  const r = generate(state.spec, state.style, state.feel, state.variant, name, state.game);
+  state.result = r;
+  SCOPES.forEach(([k]) => {
+    $("v-" + k).textContent = r.values[k];
+    $("b-" + k).style.width = (r.values[k] / 200 * 100) + "%";
+  });
+  $("v-fire").textContent = r.fire + "%";
+  $("b-fire").style.width = r.fire + "%";
+  $("v-sw").textContent = r.sw ? String(r.sw) : "Không áp dụng";
+  $("swNote").hidden = !r.sw;
+  $("swCard").classList.toggle("na", !r.sw);
+  if (r.sw) $("b-sw").style.left = ((r.sw - 360) / 80 * 100) + "%";
+  const s = state.spec;
+  $("devline").textContent = name + " · " + s.inch + " inch · " + s.hz + " Hz · " + TIER_NAMES[s.tier - 1] + " · " + (s.os === "ios" ? "iOS" : "Android") + " · " + STYLES[state.style].label;
+  $("ver").textContent = "Bản " + state.variant;
+  const vn = state.game === "vn";
+  $("rt").textContent = vn ? "Bộ độ nhạy FF VN" : "Bộ độ nhạy";
+  $("gameTag").hidden = !vn;
+  $("vnNote").hidden = !vn;
+  $("results").classList.toggle("is-vn", vn);
+  if (!state.posManual) { const p = recommendPos(state.spec, state.style); state.pos = { x: p.x, y: p.y }; state.posL = { x: p.lx, y: p.ly }; }
+  renderLayout();
+  $("sample").hidden = state.confirmed || $("dev").value.trim() !== SAMPLE;
+}
+function summary() {
+  const r = state.result;
+  const lines = ["Độ nhạy " + (state.game === "vn" ? "FF VN" : "Free Fire") + " cho " + currentName() + " (" + STYLES[state.style].label + ", bản " + state.variant + ")"];
+  SCOPES.forEach(([k, label]) => lines.push(label + ": " + r.values[k]));
+  lines.push("Nút bắn: " + r.fire + "%");
+  const sc = screenCm(state.spec);
+  lines.push("Vị trí nút bắn phải: cách mép phải " + fmtCm(state.pos.x, sc.w) + " cm, cách mép dưới " + fmtCm(state.pos.y, sc.h) + " cm");
+  if (state.leftOn) lines.push("Vị trí nút bắn trái: cách mép trái " + fmtCm(state.posL.x, sc.w) + " cm, cách mép dưới " + fmtCm(state.posL.y, sc.h) + " cm");
+  if (r.sw) lines.push("Smallest width (Android, tùy chọn): " + r.sw);
+  return lines.join("\n");
+}
+
+async function doCopy() {
+  const t = summary();
+  try {
+    await navigator.clipboard.writeText(t);
+    $("copybox").hidden = true;
+    say("Đã sao chép.");
+  } catch (e) {
+    const box = $("copybox");
+    box.value = t;
+    box.hidden = false;
+    box.focus();
+    box.select();
+    say("Máy không cho sao chép tự động. Hãy sao chép đoạn chữ bên dưới.");
+  }
+}
+function persist() { try { localStorage.setItem("ff-sens-profiles", JSON.stringify(saved)); } catch (e) {} }
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem("ff-sens-profiles");
+    const arr = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(arr)) saved = arr.filter(x => x && x.spec && STYLES[x.style]).slice(0, 12);
+  } catch (e) { saved = []; }
+}
+function renderSaved() {
+  const ul = $("saved");
+  ul.textContent = "";
+  if (!saved.length) {
+    const li = document.createElement("li");
+    li.className = "empty";
+    li.textContent = "Chưa lưu cấu hình nào. Bấm Lưu cấu hình ở phần Bộ độ nhạy.";
+    ul.appendChild(li);
+    return;
+  }
+  saved.forEach(item => {
+    const li = document.createElement("li");
+    const who = document.createElement("div");
+    who.className = "who";
+    who.textContent = item.name;
+    const meta = document.createElement("small");
+    meta.textContent = (item.game === "vn" ? "FF VN · " : "") + STYLES[item.style].label + " · Bản " + item.variant;
+    who.appendChild(meta);
+    const open = document.createElement("button");
+    open.type = "button"; open.className = "mini"; open.textContent = "Mở";
+    open.setAttribute("aria-label", "Mở cấu hình " + item.name);
+    open.addEventListener("click", () => loadProfile(item));
+    const del = document.createElement("button");
+    del.type = "button"; del.className = "mini"; del.textContent = "Xóa";
+    del.setAttribute("aria-label", "Xóa cấu hình " + item.name);
+    del.addEventListener("click", () => { saved = saved.filter(x => x.id !== item.id); persist(); renderSaved(); });
+    li.append(who, open, del);
+    ul.appendChild(li);
+  });
+}
+function saveProfile() {
+  saved.unshift({ id: Date.now(), name: currentName(), game: state.game, pos: { ...state.pos }, posL: { ...state.posL }, posManual: state.posManual, leftOn: state.leftOn, style: state.style, feel: state.feel, variant: state.variant, spec: { ...state.spec }, manual: state.manual });
+  saved = saved.slice(0, 12);
+  persist();
+  renderSaved();
+  say("Đã lưu cấu hình.");
+}
+function loadProfile(item) {
+  $("dev").value = item.name;
+  state.game = item.game === "vn" ? "vn" : "global";
+  document.querySelector('input[name="game"][value="' + state.game + '"]').checked = true;
+  state.style = item.style;
+  document.querySelector('input[name="style"][value="' + item.style + '"]').checked = true;
+  state.feel = item.feel;
+  $("feel").value = item.feel;
+  updateFeelLabel();
+  state.variant = item.variant;
+  state.leftOn = !!item.leftOn;
+  state.posManual = !!item.posManual;
+  if (item.pos && item.posL) { state.pos = { ...item.pos }; state.posL = { ...item.posL }; }
+  state.dev = findDevice(item.name);
+  state.spec = { ...item.spec };
+  state.manual = !!item.manual;
+  state.confirmed = true;
+  fillFields();
+  setStatus();
+  render();
+  $("results").scrollIntoView({ behavior: motionOk() ? "smooth" : "auto", block: "start" });
+}
+function motionOk() { return !matchMedia("(prefers-reduced-motion: reduce)").matches; }
+function updateFeelLabel() {
+  const v = state.feel;
+  $("feelOut").textContent = v === 0 ? "Chuẩn" : v < 0 ? "Chậm, chắc tay (" + v + ")" : "Nhanh, linh hoạt (+" + v + ")";
+}
+function renderLayout() {
+  const asp = aspectOf(state.spec);
+  $("stage").style.aspectRatio = String(asp);
+  const w = (state.result.fire / 100 * 0.42 / asp * 100).toFixed(2) + "%";
+  const fb = $("fb"), fl = $("fbl");
+  fb.style.width = w;
+  fl.style.width = w;
+  fb.style.left = (100 - state.pos.x) + "%";
+  fb.style.top = (100 - state.pos.y) + "%";
+  fl.style.left = state.posL.x + "%";
+  fl.style.top = (100 - state.posL.y) + "%";
+  fl.hidden = !state.leftOn;
+  $("leftOn").checked = state.leftOn;
+  const sc = screenCm(state.spec);
+  $("posR").textContent = "Cách mép phải " + fmtCm(state.pos.x, sc.w) + " cm, cách mép dưới " + fmtCm(state.pos.y, sc.h) + " cm";
+  $("posL").textContent = "Cách mép trái " + fmtCm(state.posL.x, sc.w) + " cm, cách mép dưới " + fmtCm(state.posL.y, sc.h) + " cm";
+  $("cmNote").textContent = "Đo từ mép màn hình, ước tính theo máy " + state.spec.inch + " inch (khoảng " + sc.w.toFixed(1) + " x " + sc.h.toFixed(1) + " cm khi cầm ngang).";
+  $("posLrow").hidden = !state.leftOn;
+  $("posTag").hidden = !state.posManual;
+}
+function setPos(which, cx, cy) {
+  const y = clamp(Math.round((1 - cy) * 100), 12, 85);
+  if (which === "r") state.pos = { x: clamp(Math.round((1 - cx) * 100), 4, 50), y };
+  else state.posL = { x: clamp(Math.round(cx * 100), 4, 40), y };
+  state.posManual = true;
+  renderLayout();
+}
+function bindDrag(el, which) {
+  let drag = false;
+  el.addEventListener("pointerdown", e => { drag = true; el.setPointerCapture(e.pointerId); el.focus(); e.preventDefault(); });
+  el.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const rc = $("stage").getBoundingClientRect();
+    setPos(which, (e.clientX - rc.left) / rc.width, (e.clientY - rc.top) / rc.height);
+  });
+  const end = () => { drag = false; };
+  el.addEventListener("pointerup", end);
+  el.addEventListener("pointercancel", end);
+  el.addEventListener("keydown", e => {
+    const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const cx = which === "r" ? 1 - state.pos.x / 100 : state.posL.x / 100;
+    const cy = 1 - (which === "r" ? state.pos.y : state.posL.y) / 100;
+    setPos(which, cx + d[0] / 100, cy + d[1] / 100);
+  });
+}
+function readFields() {
+  const inch = parseFloat($("inch").value);
+  if (!isFinite(inch) || inch < 4 || inch > 14) return false;
+  state.spec = { os: $("os").value, inch, hz: parseInt($("hz").value, 10), tier: parseInt($("tier").value, 10) };
+  return true;
+}
+
+$("dev").addEventListener("input", () => { syncDevice(); setStatus(); render(); });
+document.querySelectorAll('input[name="style"]').forEach(r => r.addEventListener("change", () => { state.style = r.value; render(); }));
+document.querySelectorAll('input[name="game"]').forEach(r => r.addEventListener("change", () => { state.game = r.value; render(); }));
+$("feel").addEventListener("input", () => { state.feel = parseInt($("feel").value, 10); updateFeelLabel(); render(); });
+["os", "inch", "hz", "tier"].forEach(id => $(id).addEventListener("input", () => {
+  if (!readFields()) return;
+  state.manual = true;
+  state.dev = null;
+  setStatus();
+  render();
+}));
+$("f").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!$("dev").value.trim()) { setStatus(); $("dev").focus(); return; }
+  state.confirmed = true;
+  syncDevice();
+  setStatus();
+  render();
+  $("results").scrollIntoView({ behavior: motionOk() ? "smooth" : "auto", block: "start" });
+});
+$("alt").addEventListener("click", () => { state.variant += 1; render(); say("Đã đổi sang bản " + state.variant + "."); });
+$("copy").addEventListener("click", doCopy);
+$("save").addEventListener("click", saveProfile);
+bindDrag($("fb"), "r");
+bindDrag($("fbl"), "l");
+$("leftOn").addEventListener("change", () => { state.leftOn = $("leftOn").checked; renderLayout(); });
+$("posReset").addEventListener("click", () => { state.posManual = false; render(); });
+
+loadSaved();
+fillFields();
+syncDevice();
+setStatus();
+updateFeelLabel();
+render();
+renderSaved();
+requestAnimationFrame(() => document.body.classList.add("ready"));
+</script>
+
+</body></html>
